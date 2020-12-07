@@ -2,7 +2,7 @@
 def read_input():
     with open('../inputs/day1.txt') as f:
         data = f.read()
-    return map(int, data.splitlines())
+    return list(map(int, data.splitlines()))
 
 
 def two_sum(data, target):
