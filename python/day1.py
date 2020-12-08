@@ -1,8 +1,4 @@
-
-def read_input():
-    with open('../inputs/day1.txt') as f:
-        data = f.read()
-    return list(map(int, data.splitlines()))
+from utilities import read_int_input
 
 
 def two_sum(data, target):
@@ -28,7 +24,7 @@ def part_2(data):
 
 def fix_expense_report():
     print('Day 1')
-    data = read_input()
+    data = read_int_input('../inputs/day1.txt')
     print('\tPart 1: {}'.format(part_1(data)))
     print('\tPart 2: {}'.format(part_2(data)))
 
