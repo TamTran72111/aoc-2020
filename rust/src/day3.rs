@@ -25,7 +25,7 @@ fn part_1(data: &Vec<Vec<char>>) {
 fn part_2(data: &Vec<Vec<char>>) {
     let moves = vec![(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)];
     println!(
-        "\tPart 1: {}",
+        "\tPart 2: {}",
         moves
             .iter()
             .map(|move_| count_trees(data, move_))

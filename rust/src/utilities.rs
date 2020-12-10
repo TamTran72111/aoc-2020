@@ -16,3 +16,11 @@ pub fn read_int_array(file_name: &str) -> Vec<i32> {
         .map(|num| num.parse::<i32>().unwrap())
         .collect()
 }
+
+pub fn read_block(file_name: &str) -> Vec<String> {
+    let content = read_file(file_name);
+    content
+        .split("\n\n")
+        .map(|block| block.to_string())
+        .collect()
+}

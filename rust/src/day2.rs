@@ -53,7 +53,7 @@ fn part_1(data: &Vec<Policy>) {
 
 fn part_2(data: &Vec<Policy>) {
     println!(
-        "\tPart 1: {}",
+        "\tPart 2: {}",
         data.iter()
             .filter(|policy| policy.validate_password_2())
             .count()
