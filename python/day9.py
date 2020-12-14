@@ -29,7 +29,7 @@ def find_min_max_sum(numbers: List[int]) -> int:
     return min(numbers) + max(numbers)
 
 
-def find_weaknest(numbers: List[int], target: int) -> int:
+def find_weakness(numbers: List[int], target: int) -> int:
     contiguous_sum = [numbers[0] + numbers[1]]
     for i in range(2, len(numbers)):
         contiguous_sum = [con_sum + numbers[i] for con_sum in contiguous_sum]
@@ -45,7 +45,7 @@ def part_1(numbers: List[int]) -> int:
 
 
 def part_2(numbers: List[int]) -> int:
-    return find_weaknest(numbers, part_1(numbers))
+    return find_weakness(numbers, part_1(numbers))
 
 
 if __name__ == '__main__':
