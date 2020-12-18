@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 fn memory_game(starting_numbers: &[usize], last_turn: usize) -> usize {
     let mut last_num = *starting_numbers.last().unwrap();
     let mut memory = vec![-1isize; 30_000_000];
