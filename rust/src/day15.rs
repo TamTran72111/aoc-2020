@@ -19,30 +19,6 @@ fn memory_game(starting_numbers: &[usize], last_turn: usize) -> usize {
     last_num
 }
 
-fn memory_game2(starting_numbers: &[usize], last_turn: usize) -> usize {
-    let mut last_num = 0;
-    let mut memory = HashMap::new();
-    for turn in starting_numbers.len()..last_turn - 1 {
-        let new_last_num = match memory.get(&last_num) {
-            None => {
-                if starting_numbers.contains(&last_num) {
-                    let previous = starting_numbers
-                        .iter()
-                        .position(|num| *num == last_num)
-                        .unwrap();
-                    turn - previous
-                } else {
-                    0
-                }
-            }
-            Some(&previous) => turn - previous,
-        };
-        memory.insert(last_num, turn);
-        last_num = new_last_num;
-    }
-    last_num
-}
-
 pub fn main() {
     println!("Day 15");
     let starting_numbers = [1, 20, 8, 12, 0, 14];

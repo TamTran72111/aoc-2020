@@ -157,7 +157,7 @@ impl TicketRule {
 
 pub fn main() {
     println!("Day 16");
-    let mut data = read_block("../inputs/day16.txt");
+    let data = read_block("../inputs/day16.txt");
     let mut ticket_rule = TicketRule::new(&data[0]);
     println!("\tPart 1: {}", ticket_rule.sum_invalid(&data[2]));
     println!(
