@@ -2,6 +2,7 @@ import unittest
 from utilities import read_input
 from collections import defaultdict
 from typing import List
+from functools import lru_cache
 
 
 class Rule:
@@ -22,6 +23,7 @@ class Rule:
         results = self.__match('0', 0, message)
         return any([result == len(message) for result in results])
 
+    @lru_cache
     def __match(self, rule: str, idx: int, message: str) -> List[int]:
         if idx == len(message):
             return []
@@ -152,4 +154,4 @@ if __name__ == '__main__':
     rule = Rule(updated_rules)
     print('\tPart 2: {}'.format(count_match_message(rule, messages)))
 
-    unittest.main()
+    # unittest.main()
