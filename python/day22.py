@@ -40,14 +40,11 @@ class Player:
     def prepare_subgame(self, num: int):
         return Player(list(self.deck)[:num])
 
-    def __str__(self) -> str:
-        return ','.join([str(card) for card in self.deck])
-
     def recursive_combat(self, other) -> bool:
         memory = set()
         while not self.is_out_of_card() and not other.is_out_of_card():
-            s1 = str(self)
-            s2 = str(other)
+            s1 = tuple(self.deck)
+            s2 = tuple(other.deck)
             if (s1, s2) in memory:
                 return True
             memory.add((s1, s2))
