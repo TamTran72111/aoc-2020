@@ -4,84 +4,55 @@ from collections import defaultdict, deque
 from typing import List, Dict, Set, Optional
 
 
-class Player:
-    def __init__(self, deck: List[int]):
-        self.deck = deque(deck)
-
-    def is_out_of_card(self):
-        return len(self.deck) == 0
-
-    def draw(self) -> Optional[int]:
-        if self.is_out_of_card():
-            return None
-        return self.deck.popleft()
-
-    def push(self, card: int):
-        self.deck.append(card)
-
-    def combat(self, other) -> bool:
-        while not self.is_out_of_card() and not other.is_out_of_card():
-            my_card = self.draw()
-            other_card = other.draw()
-            if my_card > other_card:
-                self.push(my_card)
-                self.push(other_card)
-            else:
-                other.push(other_card)
-                other.push(my_card)
-
-    @property
-    def score(self) -> int:
-        return sum([(i+1) * card for i, card in enumerate(reversed(self.deck))])
-
-    def is_ready_for_subgame(self, num) -> bool:
-        return len(self.deck) >= num
-
-    def prepare_subgame(self, num: int):
-        return Player(list(self.deck)[:num])
-
-    def recursive_combat(self, other) -> bool:
-        memory = set()
-        while not self.is_out_of_card() and not other.is_out_of_card():
-            s1 = tuple(self.deck)
-            s2 = tuple(other.deck)
-            if (s1, s2) in memory:
-                return True
-            memory.add((s1, s2))
-            my_card = self.draw()
-            other_card = other.draw()
-            if self.is_ready_for_subgame(my_card) and other.is_ready_for_subgame(other_card):
-                sub_self = self.prepare_subgame(my_card)
-                sub_other = other.prepare_subgame(other_card)
-                if sub_self.recursive_combat(sub_other):
-                    self.push(my_card)
-                    self.push(other_card)
-                else:
-                    other.push(other_card)
-                    other.push(my_card)
-            elif my_card > other_card:
-                self.push(my_card)
-                self.push(other_card)
-            else:
-                other.push(other_card)
-                other.push(my_card)
-        return other.is_out_of_card()
+def score(deck: List[int]) -> int:
+    return sum([(i+1) * card for i, card in enumerate(reversed(deck))])
 
 
-def solve_part_1(players: List[str]) -> int:
-    player1 = Player([int(card) for card in players[0].splitlines()[1:]])
-    player2 = Player([int(card) for card in players[1].splitlines()[1:]])
-    player1.combat(player2)
-    return player1.score + player2.score
+def solve_part_1(deck1: List[int], deck2: List[int]) -> int:
+    while len(deck1) and len(deck2):
+        card1 = deck1[0]
+        card2 = deck2[0]
+        if card1 > card2:
+            deck1 = deck1[1:] + [card1, card2]
+            deck2 = deck2[1:]
+        else:
+            deck1 = deck1[1:]
+            deck2 = deck2[1:] + [card2, card1]
+    return score(deck1) if len(deck1) else score(deck2)
 
 
-def solve_part_2(players: List[str]) -> int:
-    player1 = Player([int(card) for card in players[0].splitlines()[1:]])
-    player2 = Player([int(card) for card in players[1].splitlines()[1:]])
-    if player1.recursive_combat(player2):
-        return player1.score
+def recursive_combat(deck1: List[int], deck2: List[int]) -> bool:
+    memory = set()
+    while len(deck1) and len(deck2):
+        s = (tuple(deck1), tuple(deck2))
+        if s in memory:
+            return True, deck1
+        memory.add(s)
 
-    return player2.score
+        card1 = deck1[0]
+        card2 = deck2[0]
+
+        if len(deck1) > card1 and len(deck2) > card2:
+            win, _ = recursive_combat(deck1[1:card1+1], deck2[1:card2+1])
+        else:
+            win = card1 > card2
+
+        if win:
+            deck1 = deck1[1:] + [card1, card2]
+            deck2 = deck2[1:]
+        else:
+            deck1 = deck1[1:]
+            deck2 = deck2[1:] + [card2, card1]
+
+    if len(deck1):
+        return True, deck1
+    else:
+        return False, deck2
+
+
+def solve_part_2(deck1: List[int], deck2: List[int]) -> int:
+    _, deck = recursive_combat(deck1, deck2)
+    return score(deck)
 
 
 class Testing(unittest.TestCase):
@@ -100,9 +71,11 @@ Player 2:
 4
 7
 10"""
+        deck1 = [int(x) for x in test_input.split('\n\n')[0].splitlines()[1:]]
+        deck2 = [int(x) for x in test_input.split('\n\n')[1].splitlines()[1:]]
 
-        self.assertEqual(solve_part_1(test_input.split('\n\n')), 306)
-        self.assertEqual(solve_part_2(test_input.split('\n\n')), 291)
+        self.assertEqual(solve_part_1(deck1[:], deck2[:]), 306)
+        self.assertEqual(solve_part_2(deck1, deck2), 291)
 
 
 if __name__ == '__main__':
@@ -111,9 +84,11 @@ if __name__ == '__main__':
     start = time.time()
     players: List[str] = read_blocks('../inputs/day22.txt')
 
-    # solution = Solution(foods)
-    print('\tPart 1: {}'.format(solve_part_1(players)))
-    print('\tPart 2: {}'.format(solve_part_2(players)))
+    deck1 = [int(card) for card in players[0].splitlines()[1:]]
+    deck2 = [int(card) for card in players[1].splitlines()[1:]]
+
+    print('\tPart 1: {}'.format(solve_part_1(deck1[:], deck2[:])))
+    print('\tPart 2: {}'.format(solve_part_2(deck1, deck2)))
 
     print("\tTime: {:.4f}ms".format((time.time() - start) * 1000))
     unittest.main()
