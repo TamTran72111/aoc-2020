@@ -31,6 +31,16 @@ impl Player {
     }
 
     fn recursive_combat(&mut self, other: &mut Player) -> bool {
+        // Apply the trick from `curious_sapi3n`. If player 1 is holding the
+        // highest card in the sub game decks, it is a sure win for player 1.
+        // This reduces the recursion, so speed up the program.
+        // max_self > self.deck.len() + other.deck.len() will check that this
+        // is a sub game.
+        let max_self = *self.deck.iter().max().unwrap();
+        let max_other = *other.deck.iter().max().unwrap();
+        if max_self > max_other && max_self > self.deck.len() + other.deck.len() {
+            return true;
+        }
         let mut memory = HashSet::new();
         while !(self.is_lost() || other.is_lost()) {
             let mut hasher = DefaultHasher::new();

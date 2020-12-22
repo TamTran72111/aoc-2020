@@ -22,6 +22,13 @@ def solve_part_1(deck1: List[int], deck2: List[int]) -> int:
 
 
 def recursive_combat(deck1: List[int], deck2: List[int]) -> bool:
+    m = max(deck1)
+    # Apply the trick from `curious_sapi3n`. If player 1 is holding the
+    # highest card in the sub game decks, it is a sure win for player 1. This
+    # reduces the recursion, so speed up the program.
+    # m > len(deck1) + len(deck2) will check that this is a sub game
+    if m > max(deck2) and m > len(deck1) + len(deck2):
+        return True, deck1
     memory = set()
     while len(deck1) and len(deck2):
         s = (tuple(deck1), tuple(deck2))
