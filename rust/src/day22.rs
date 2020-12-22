@@ -1,4 +1,6 @@
+use std::collections::hash_map::DefaultHasher;
 use std::collections::{HashSet, VecDeque};
+use std::hash::{Hash, Hasher};
 
 use crate::utilities::read_block;
 
@@ -31,9 +33,13 @@ impl Player {
     fn recursive_combat(&mut self, other: &mut Player) -> bool {
         let mut memory = HashSet::new();
         while !(self.is_lost() || other.is_lost()) {
-            let round = (format!("{:?}", self.deck), format!("{:?}", other.deck));
-            if !memory.insert(round) {
-                // Found the same round
+            let mut hasher = DefaultHasher::new();
+
+            (&self.deck, &other.deck).hash(&mut hasher);
+            let game_state = hasher.finish();
+
+            if !memory.insert(game_state) {
+                // Found the same game state
                 return true;
             }
             let self_card = self.draw().unwrap();
@@ -74,7 +80,7 @@ impl Player {
 
     fn prepare_for_subgame(&self, num: usize) -> Player {
         Player {
-            deck: self.deck.iter().take(num).map(|x| *x).collect(),
+            deck: self.deck.iter().take(num).cloned().collect(),
         }
     }
 
