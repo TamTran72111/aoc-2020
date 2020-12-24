@@ -1,31 +1,29 @@
+import array
 import unittest
 from typing import List
 
 
 def perform_move(circle: List[int], current_cup: int, wrap_value: int) -> int:
-    pickups = []
-    pickup = circle[current_cup]
-    # pick up 3 cups
-    for _ in range(3):
-        pickups.append(pickup)
-        pickup = circle[pickup]
+    pick_1 = circle[current_cup]
+    pick_2 = circle[pick_1]
+    pick_3 = circle[pick_2]
     # now pickup is the value after the pick up 3 immediately cups after the
     # current cup, which mean it is the next current cup
-    circle[current_cup] = pickup
+    circle[current_cup] = circle[pick_3]
 
     # find destination value
-    destination = current_cup
-    while destination == current_cup or destination in pickups:
+    destination = current_cup - 1 if current_cup != 1 else wrap_value
+    while destination == pick_1 or destination == pick_3 or destination == pick_2:
         destination -= 1
-        if destination == 0:
-            destination = wrap_value
+    if destination == 0:
+        destination = wrap_value
 
     # insert the 3 cups picked up after the destination, so the next cup of
     # the destination cup will be the first picked up cup, and the next cup
     # of the last picked up cup will be the cup next to the destination cup
     # before inserting
-    circle[pickups[-1]] = circle[destination]
-    circle[destination] = pickups[0]
+    circle[pick_3] = circle[destination]
+    circle[destination] = pick_1
 
     # return the cup after the current cup, which is the current cup for the
     # next move
@@ -54,7 +52,7 @@ def solve_part_1(initial: str, moves: int) -> str:
 
 
 def solve_part_2(initial: str) -> int:
-    circle = [0] * 1_000_001
+    circle = array.array('I', range(1, 1_000_002))
     for i in range(10, 1_000_000):
         circle[i] = i + 1
 
