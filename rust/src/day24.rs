@@ -65,7 +65,7 @@ fn solve_part_2(mut black_tiles: HashSet<(i16, i16)>) -> usize {
     black_tiles.len()
 }
 pub fn main() {
-    println!("Day 23");
+    println!("Day 24");
     let lines = read_lines("../inputs/day24.txt");
     let black_tiles = solve_part_1(lines);
     println!("\tPart1: {}", black_tiles.len());
