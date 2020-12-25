@@ -92,7 +92,7 @@ wseweeenwnesenwwwswnew"""
 
 
 if __name__ == '__main__':
-    print('Day 23')
+    print('Day 24')
     import time
     start = time.time()
     lines = read_lines('../inputs/day24.txt')
